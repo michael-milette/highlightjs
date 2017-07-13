@@ -38,8 +38,10 @@ The first public ALPHA version was released on 2017-07-12.
 
 For more information on releases since then, see CHANGELOG.md.
 
-Installation
-------------
+Installation and Usage
+----------------------
+IMPORANT: Although we expect everything to work, this ALPHA release has not been fully tested in every situation. If you find a problem, please help by reporting it in the [Bug Tracker](http://github.com/michael-milette/highlightjs/issues).
+
 For every page where you will want to apply this script, you will need to
 include following HTML in the header section of every page:
 
@@ -57,9 +59,16 @@ body of your page:
 
     <script type="text/javascript">window.onload = highlight();</script>
 
-Usage & Settings
-----------------
-IMPORANT: Although we expect everything to work, this ALPHA release has not been fully tested in every situation. If you find a problem, please help by reporting it in the [Bug Tracker](http://github.com/michael-milette/highlightjs/issues).
+Optional Parameters
+
+The highlight() function has several optional parameters available to change the way it works. These include:
+
+* paramName: Default is 'q'. This string enables you to specify a different parameter name in URL query.
+* className: Default is 'highlight'. This string enables you to specify a different class name for highlighting.
+* doScroll: Default is true: If set to false, will disable automatic scrolling down to first search term found in the page.
+* enableTabbing: Default is true. If set to false, will not create tab stops for each instance of the search term found in the page.
+
+Usage
 
 To specify one or more search term in the URL, simply add a "q" parameter and the search terms to the URL. Example:
 
@@ -75,7 +84,7 @@ The development of this JavaScript was motivated through our experience with the
 
 Limitations
 -----------
-The current version of highlightJS has only been tested with modern, up-to-date web browsers including Chrome, Firefox, Edge and IE11.
+The current version of highlightJS has been tested with up-to-date versions of most popular web browsers such as Chrome, Firefox, Safari, Edge and IE11. It could technically also be compatible with browsers that came out as far back 2012 however these have not been tested.
 
 Future Releases
 ---------------
@@ -97,6 +106,10 @@ http://github.com/michael-milette/highlightjs
 Frequently Asked Questions (FAQ)
 --------------------------------
 IMPORANT: Although we expect everything to work, this ALPHA release has not been fully tested in every situation. If you find a problem, please help by reporting it in the [Bug Tracker](http://github.com/michael-milette/highlightjs/issues).
+
+**Question: How can I do the autoscrolling without having the highlighing of instances of the search term?**
+
+Answer: If you don't want highlighting but do want the autoscroll feature, simply set the class name to something that will not cause your CSS to apply highlighting (like 'nohighlight') and then use doScroll as you would normally.
 
 **Question: I have a question that is not listed here**
 

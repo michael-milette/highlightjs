@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// 
+//
 // Filename: highlight.js
 // Language: JavaScript
 // Purpose: Highlight specified search terms in the URL (q parameter)
@@ -19,7 +19,7 @@
 // @copyright (c) 2017 TNG Consulting Inc. - www.tngconsulting.ca
 // @author: Michael Milette
 // @license: GNU General Public License (GPL)[http://www.gnu.org/licenses/] 3.0 or later.
-// @version: 0.1 ALPHA - 2017-07-12 - Initial release.
+// @version: 0.2 ALPHA - 2017-07-13.
 
 /**
  * findAndReplaceDOMText v 0.4.5
@@ -656,42 +656,69 @@
 
 }));
 
-// ================================================================
-// @function highlight()
-// @copyright (c) 2017 TNG Consulting Inc. - www.tngconsulting.ca
-// @author: Michael Milette
-// @license: GPL 3.0+
-// ================================================================
-function highlight() {
+/**
+ * Function: highlight(<paramName><,idName><,doHighlight><,doScroll>)
+ * @copyright (c) 2017 TNG Consulting Inc. - www.tngconsulting.ca
+ * @author: Michael Milette
+ * @license: GPL 3.0+
+ *
+ * @param {paramName} string (optional) Name of parameter in URL query string. Default is 'q'.
+ * @param {className} string (optional) Name of highlight class. Default is 'highlight'.
+ * @param {doScroll} boolean (optional) True (default): Will scroll down to first search term in the page, False will not.
+ * @param {enableTabbing} boolean (optional) True (default): Will create tab stops for each instance of the search term, False will not.
+ */
+function highlight(paramName, className, doScroll, enableTabbing) {
     // Process query, set highlights and scroll to first search result.
-    paramq = 'q';
-    idname = 'highlight';
+    paramName = paramName || 'q'; // Default is 'q'.
+    className = className || 'highlight'; // Default is 'highlight'.
+    doScroll = doScroll !== false; // Default is true, or false if doHighlight is false.
+    enableTabbing = enableTabbing !== false; // Default is true.
 
-    // Get search terms.
-    var regex = new RegExp('[\\?&]' + paramq + '=([^&#]*)');
+    // Get search terms from URL query string.
+    var regex = new RegExp('[\\?&]' + paramName + '=([^&#]*)');
     var q = regex.exec(location.search);
     q = (q === null ? null : decodeURIComponent(q[1].replace(/\+/g, ' ')));
+    if (q == null) {
+        // No search terms, nothing more to do here.
+        return;
+    }
 
-    if (q != null) {
-        // For each search term, wrap it in a span with a class called 'highlight'.
-        list = q.split(' ');
-        list.forEach(function(item, index) {
-            findAndReplaceDOMText(document.body, {find: new RegExp(item,"ig"), wrap: 'span', wrapClass: 'highlight'});
+    // For each search term, wrap it in a span set of tags with a class called 'highlight'.
+    var terms = q.split(' ');
+    terms.forEach(function(item) {
+        findAndReplaceDOMText(document.body, {
+            preset: 'prose',
+            find: new RegExp(item,"ig"),
+            wrap: 'span',
+            wrapClass: className
         });
+    });
 
-        // Scroll down to the first instance of the search term.
-        var element = document.getElementsByClassName(idname)[0];
-        if (element.scrollIntoView) {
-            element.scrollIntoView();
+    // Scroll down to the first instance of the search term.
+    var element = document.getElementsByClassName(className);
+    if (element.length > 0) {
+        // Add tab stops so the user can just tab from one instance of the term to the next.
+        if(enableTabbing) {
+            for(var index = 0; index < element.length; index++) {
+                element[index].tabIndex = 0;
+            };
+        }
+        if (element[0].scrollIntoView) {
+            element[0].scrollIntoView();
         } else {
-            var box = element.getBoundingClientRect();
+            var box = element[0].getBoundingClientRect();
             var top = box.top + window.pageYOffset - document.documentElement.clientTop;
             // If the element is near the top of the page.
             if (top < 100) {
-                window.scrollTo(0,0); // Top of page.
+                window.scrollTo(0, 0); // Top of page.
             } else {
-                window.scrollTo(0,top-50); // 50px down from top of page.
+                window.scrollTo(0, top - 50); // 50px down from top of page.
             }
+        }
+        
+        // Set focus for accessibility.
+        if(doScroll) {
+            element[0].focus();
         }
     }
 }
